@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 require 'formula'
 
+#
+# Based on marcqualie/homebrew-nginx/nginx-full.rb
+# I just wanted to add the RTMP madule
+# 
+
 class NginxFull < Formula
 
   homepage 'http://nginx.org/'
@@ -49,6 +54,7 @@ class NginxFull < Formula
   depends_on 'notice-nginx-module' if build.include? 'with-notice-module'
   depends_on 'subs-filter-nginx-module' if build.include? 'with-subs-filter-module'
   depends_on 'upload-nginx-module' if build.include? 'with-upload-module'
+  depends_on 'nginx-rtmp-module' if build.include? 'with-rtmp-module'
 
   skip_clean 'logs'
 
@@ -78,6 +84,7 @@ class NginxFull < Formula
       ['with-mp4-h264-module',    nil,                           'Compile with support for HTTP MP4/H264 Module'],
       ['with-notice-module',      nil,                           'Compile with support for HTTP Notice Module'],
       ['with-subs-filter',        nil,                           'Compile with support for Substitutions Filter Module'],
+      ['with-rtmp-module',        nil,                           'Compile with support for RTMP Module'],
       # Internal modules
       ['with-webdav',            'with-http_dav_module',         'Compile with support for WebDAV module'],
       ['with-debug',             'with-debug',                   'Compile with support for debug log'],
@@ -244,6 +251,9 @@ class NginxFull < Formula
 
     # file upload
         args << "--add-module=#{HOMEBREW_PREFIX}/share/upload-nginx-module" if build.include? "with-upload-module"
+
+    # RTMP Module
+    args << "--add-module=#{HOMEBREW_PREFIX}/Cellar/nginx-rtmp-module/HEAD" if build.include? "with-rtmp-module"
 
     if build.head?
       system "./auto/configure", *args
